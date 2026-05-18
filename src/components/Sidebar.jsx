@@ -6,10 +6,6 @@ import { BsCalendarEvent } from "react-icons/bs";
 
 const sections = [
   {
-    title: "Main",
-    items: [{ key: "dashboard", label: "Dashboard", count: null }],
-  },
-  {
     title: "User Details",
     items: [
       { key: "admin", label: "Admin", count: 5 },

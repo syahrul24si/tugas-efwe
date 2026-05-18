@@ -1,20 +1,6 @@
 import React, { Suspense, useState } from 'react'
 import { Routes, Route } from "react-router-dom";
 import './App.css'
-// import Sidebar from "./components/Sidebar";
-// import Header from "./components/Header";
-// import Dashboard from "./pages/main/Dashboard";
-// import Orders from "./pages/main/Orders";
-// import Customer from "./pages/main/Customer";
-// import NotFound from "./pages/main/NotFound";
-// import Error400 from "./pages/main/Error400";
-// import Error401 from "./pages/main/Error401";
-// import Error403 from "./pages/main/Error403";
-// import { MainLayout } from './layouts/MainLayout';
-// import AuthLayout from './layouts/AuthLayout';
-// import Login from './pages/Auth/Login';
-// import Forgot from './pages/Auth/Forgot';
-// import Register from './pages/Auth/Register';
 
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"))
 const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"))
@@ -25,7 +11,7 @@ const Customer = React.lazy(() => import("./pages/main/Customer"))
 const Produk = React.lazy(() => import("./pages/main/Produk"))
 const ProductDetail = React.lazy(() => import("./pages/main/ProductDetail"))
 const CustomerDetail = React.lazy(() => import("./pages/main/CustomerDetail"))
-const OrderDetail = React.lazy(() => import("./components/OrderDetail"))
+const OrderDetail = React.lazy(() => import("./pages/main/OrderDetail"))
 
 const NotFound = React.lazy(() => import("./pages/main/NotFound"))
 const Error400 = React.lazy(() => import("./pages/main/Error400"))

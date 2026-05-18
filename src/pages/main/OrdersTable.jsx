@@ -1,4 +1,6 @@
 import { useState } from "react";
+import OrderDetail from "./OrderDetail";
+
 import PageHeader from "../../components/PageHeader";
 import Badge from "../../components/Badge";
 import FilterTab from "../../components/Filter";
@@ -8,25 +10,21 @@ import TableCell from "../../components/TableCell";
 import StatusBadge from "../../components/Badge";
 import IconButton from "../../components/IconButton";
 import Pagination from "../../components/Pagination";
-import EditIcon from "../../components/EditIcon";
-import DeleteIcon from "../../components/DeleteIcon";
 import Button from "../../components/Button";
-import Avatar from "../../components/Avatar";
 import Footer from "../../components/Footer";
 
 const COLUMNS = [
-  { key: "customer_id", label: "ID" },
+  { key: "order_id", label: "ID" },
   { key: "customer_name", label: "USERNAME" },
-  { key: "email", label: "EMAIL" },
-  { key: "phone", label: "PHONE" },
   { key: "status", label: "STATUS" },
-  { key: "avatar", label: "AVATAR" },
-  { key: "actions", label: "MODIFY" },
+  { key: "total_price", label: "TOTAL PRICE" },
+  { key: "order_date", label: "ORDER DATE" },
+  { key: "order_details", label: "ORDER DETAILS" },
 ];
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
-export default function UserTable({ data = SAMPLE_DATA }) {
+export default function OrdersTable({ data = SAMPLE_DATA }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("all");
 
@@ -45,21 +43,10 @@ export default function UserTable({ data = SAMPLE_DATA }) {
 
   const tabs = [
     { key: "all", label: "All", count: data.length },
-    { key: "active", label: "Active", count: data.filter((d) => d.status === "Active").length },
-    { key: "inactive", label: "Inactive", count: data.filter((d) => d.status === "Inactive").length },
+    { key: "pending", label: "Pending", count: data.filter((d) => d.status === "Pending").length },
+    { key: "cancelled", label: "Cancelled", count: data.filter((d) => d.status === "Cancelled").length },
+    { key: "completed", label: "Completed", count: data.filter((d) => d.status === "Completed").length },
   ];
-
-  const handleEdit = (item) => {
-    console.log("Edit:", item);
-  };
-
-  const handleDelete = (item) => {
-    console.log("Delete:", item);
-  };
-
-  const handleAdd = () => {
-    console.log("Add new user");
-  };
 
   return (
     <div
@@ -73,7 +60,7 @@ export default function UserTable({ data = SAMPLE_DATA }) {
     >
 
       <PageHeader
-        title="Users"
+        title="Orders"
       />
 
       <FilterTab
@@ -84,42 +71,19 @@ export default function UserTable({ data = SAMPLE_DATA }) {
           setCurrentPage(1);
         }}
       />
-      
-      <Button variant="primary" onClick={handleAdd}>
-        Add User
-      </Button>
 
       <Table columns={COLUMNS}>
         {paginated.map((item, index) => (
-          <TableRow key={item.customer_id} isLast={index === paginated.length - 1}>
-            <TableCell>{item.customer_id}</TableCell>
+          <TableRow key={item.order_id} isLast={index === paginated.length - 1}>
+            <TableCell>{item.order_id}</TableCell>
             <TableCell style={{ color: "#fff", fontWeight: 500 }}>
               {item.customer_name}
             </TableCell>
-            <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phone}</TableCell>
+            <TableCell><Badge status={item.status} /></TableCell>
+            <TableCell>{item.total_price}</TableCell>
+            <TableCell>{item.order_date}</TableCell>
             <TableCell>
-              <Badge status={item.status} />
-            </TableCell>
-            <TableCell>
-              <Avatar name={item.customer_name} />
-            </TableCell>
-            
-            <TableCell>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <IconButton
-                  icon={<EditIcon />}
-                  variant="secondary"
-                  title="Edit"
-                  onClick={() => handleEdit(item)}
-                />
-                <IconButton
-                  icon={<DeleteIcon />}
-                  variant="danger"
-                  title="Delete"
-                  onClick={() => handleDelete(item)}
-                />
-              </div>
+              <OrderDetail order={item} />
             </TableCell>
           </TableRow>
         ))}

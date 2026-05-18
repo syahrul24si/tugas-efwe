@@ -28,6 +28,7 @@
       "stock": 8
     },
     {
+      "id": 4,
       "title": "Sepatu Nike Air Force",
       "code": "P004",
       "category": "Fashion",
@@ -36,6 +37,7 @@
       "stock": 20
     },
     {
+      "id": 5,
       "title": "Tas Ransel Eiger",
       "code": "P005",
       "category": "Fashion",
@@ -43,8 +45,8 @@
       "price": 450000,
       "stock": 30
     },
-
     {
+      "id": 6,
       "title": "Mouse Logitech Wireless",
       "code": "P006",
       "category": "Accessories",
@@ -53,6 +55,7 @@
       "stock": 40
     },
     {
+      "id": 7,
       "title": "Keyboard Mechanical Rexus",
       "code": "P007",
       "category": "Accessories",
@@ -61,6 +64,7 @@
       "stock": 18
     },
     {
+      "id": 8,
       "title": "Monitor LG 24 Inch",
       "code": "P008",
       "category": "Electronics",
@@ -69,6 +73,7 @@
       "stock": 10
     },
     {
+      "id": 9,
       "title": "Jaket Hoodie Uniqlo",
       "code": "P009",
       "category": "Fashion",
@@ -77,6 +82,7 @@
       "stock": 22
     },
     {
+      "id": 10,
       "title": "Jam Tangan Casio",
       "code": "P010",
       "category": "Accessories",
@@ -84,8 +90,8 @@
       "price": 350000,
       "stock": 35
     },
-
     {
+      "id": 11,
       "title": "Tablet iPad Gen 9",
       "code": "P011",
       "category": "Electronics",
@@ -94,6 +100,7 @@
       "stock": 7
     },
     {
+      "id": 12,
       "title": "Powerbank Xiaomi 20000mAh",
       "code": "P012",
       "category": "Accessories",
@@ -102,6 +109,7 @@
       "stock": 50
     },
     {
+      "id": 13,
       "title": "Kamera Canon EOS M50",
       "code": "P013",
       "category": "Electronics",
@@ -110,6 +118,7 @@
       "stock": 5
     },
     {
+      "id": 14,
       "title": "Speaker JBL Flip 5",
       "code": "P014",
       "category": "Electronics",
@@ -118,6 +127,7 @@
       "stock": 15
     },
     {
+      "id": 15,
       "title": "Celana Jeans Levi's",
       "code": "P015",
       "category": "Fashion",
@@ -125,8 +135,8 @@
       "price": 700000,
       "stock": 28
     },
-
     {
+      "id": 16,
       "title": "Kacamata Ray-Ban",
       "code": "P016",
       "category": "Accessories",
@@ -135,6 +145,7 @@
       "stock": 9
     },
     {
+      "id": 17,
       "title": "Printer Epson L3210",
       "code": "P017",
       "category": "Electronics",
@@ -143,6 +154,7 @@
       "stock": 11
     },
     {
+      "id": 18, 
       "title": "Router TP-Link",
       "code": "P018",
       "category": "Electronics",
@@ -151,6 +163,7 @@
       "stock": 26
     },
     {
+      "id": 19,
       "title": "Topi Adidas",
       "code": "P019",
       "category": "Fashion",
@@ -159,6 +172,7 @@
       "stock": 33
     },
     {
+      "id": 20,
       "title": "Sandal Crocs",
       "code": "P020",
       "category": "Fashion",
@@ -166,8 +180,8 @@
       "price": 500000,
       "stock": 19
     },
-
     {
+      "id": 21,
       "title": "Harddisk External WD 1TB",
       "code": "P021",
       "category": "Electronics",
@@ -176,6 +190,7 @@
       "stock": 14
     },
     {
+      "id": 22,
       "title": "Flashdisk Sandisk 64GB",
       "code": "P022",
       "category": "Accessories",
@@ -184,6 +199,7 @@
       "stock": 60
     },
     {
+      "id": 23,
       "title": "Tripod Kamera",
       "code": "P023",
       "category": "Accessories",
@@ -200,6 +216,7 @@
       "stock": 13
     },
     {
+      "id": 25,
       "title": "Kaos Polos H&M",
       "code": "P025",
       "category": "Fashion",
@@ -207,8 +224,8 @@
       "price": 150000,
       "stock": 45
     },
-
     {
+      "id": 26,
       "title": "Blender Philips",
       "code": "P026",
       "category": "Home Appliances",
@@ -217,6 +234,7 @@
       "stock": 17
     },
     {
+      "id": 27,
       "title": "Rice Cooker Miyako",
       "code": "P027",
       "category": "Home Appliances",
@@ -233,6 +251,7 @@
       "stock": 16
     },
     {
+      "id": 29,
       "title": "Vacuum Cleaner Sharp",
       "code": "P029",
       "category": "Home Appliances",
@@ -241,6 +260,7 @@
       "stock": 8
     },
     {
+      "id": 30,
       "title": "Setrika Philips",
       "code": "P030",
       "category": "Home Appliances",

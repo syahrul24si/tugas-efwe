@@ -26,16 +26,16 @@ export default function ProductDetail() {
     if (!product) return <div className="p-4">Loading...</div>
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-lg max-w-lg mx-auto mt-6">
+        <div className="p-6 bg-gray-500 rounded-xl shadow-lg max-w-lg mx-auto mt-6">
             <img
                 src={product.thumbnail}
                 alt={product.title}
                 className="rounded-xl mb-4 w-full h-48 object-cover"
             />
             <h2 className="text-2xl font-bold mb-2">{product.title}</h2>
-            <p className="text-gray-600 mb-1">Kategori: {product.category}</p>
-            <p className="text-gray-600 mb-1">Brand: {product.brand}</p>
-            <p className="text-gray-800 font-semibold text-lg">
+            <p className="text-gray-300 mb-1">Kategori: {product.category}</p>
+            <p className="text-gray-300 mb-1">Brand: {product.brand}</p>
+            <p className="text-gray-100 font-semibold text-lg">
                 Harga: Rp {product.price * 1000}
             </p>
         <button className="bg-blue-500 text-white px-4 py-2 rounded mt-4" onClick={() => window.history.back()}>
