@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import FormBook from "../../components/FormBook";
 import ContactPopup from "../../components/ContactPopup";
+import Avatar from "../../components/Avatar";
 
 const fleets = [
   {
@@ -111,10 +112,30 @@ export default function TravellingGO() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showBooking, setShowBooking] = useState(false);
+  const [userInitials, setUserInitials] = useState("?");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const getInitials = (name) => {
+    if (!name) return "?"
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll);
+
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsed = JSON.parse(userData);
+      setUserInitials(getInitials(parsed.full_name));
+      setIsLoggedIn(true);
+    }
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -149,19 +170,25 @@ export default function TravellingGO() {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <button className="text-white/80 hover:text-white text-sm font-medium px-4 py-2 transition-colors">
-              Masuk
+            {!isLoggedIn && (
+        <>
+            <button className="bg-[#FF6B4A] hover:bg-[#e85c3c] text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:shadow-lg hover:shadow-[#FF6B4A]/30 active:scale-95">
+                <NavLink to="/login">Masuk</NavLink>
             </button>
             <button className="bg-[#FF6B4A] hover:bg-[#e85c3c] text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:shadow-lg hover:shadow-[#FF6B4A]/30 active:scale-95">
-              Daftar Gratis
+                <NavLink to="/register">Daftar Gratis</NavLink>
             </button>
+        </>
+    )}
             <button onClick={() => setShowBooking(true)}
                     className="bg-[#FF6B4A] hover:bg-[#e85c3c] text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:shadow-lg hover:shadow-[#FF6B4A]/30 active:scale-95">
               Booking
             </button>
-            <button className="w-11 h-11 rounded-2xl bg-[#3F9CBF] flex items-center justify-center text-sm hover:shadow-lg hover:shadow-[#FF6B4A]">
-                <NavLink to="/profil">Pr</NavLink>
-            </button>
+            {isLoggedIn && (
+              <NavLink to="/profil" className="w-11 h-11 rounded-2xl bg-[#3F9CBF] flex items-center justify-center text-sm hover:shadow-lg hover:shadow-[#FF6B4A] transition-shadow">
+                <Avatar initials={userInitials} />
+              </NavLink>
+            )}
           </div>
 
           {/* Desktop menu button */}

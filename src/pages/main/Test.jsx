@@ -2,52 +2,68 @@ import { useState } from "react"
 import { BsFillExclamationDiamondFill } from "react-icons/bs"
 import { ImSpinner2 } from "react-icons/im"
 import { AiFillDelete } from "react-icons/ai"
-import { API } from "../../service/API"
+import { API, supabase } from "../../service/API"
+import Avatar from "../../components/Avatar";
 
-export default function Test() {
+export default function ManajemenUser() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
     const [users, setUsers] = useState([])
 
     const [dataForm, setDataForm] = useState({
-        username: "",
+        email: "",
         password: "",
+        full_name: "",
+        role: "member",
     })
 
     const handleChange = (evt) => {
         const { name, value } = evt.target
-        setDataForm({
-            ...dataForm,
-            [name]: value,
-        })
+        setDataForm({ ...dataForm, [name]: value })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
+        setError("")
+        setSuccess("")
 
         try {
-            setLoading(true)
-            setError("")
-            setSuccess("")
-
-            // Cek apakah username sudah ada
-            const { data: existing } = await API.findByUsername(dataForm.username)
+            // Cek apakah email sudah terdaftar
+            const { data: existing } = await API.findByEmail(dataForm.email)
             if (existing) {
-                setError("Username sudah digunakan.")
+                setError("Email sudah digunakan.")
                 return
             }
 
-            // Simpan ke database (password disimpan apa adanya, tanpa hash)
-            await API.createUser({
-                username: dataForm.username,
-                password_hash: dataForm.password,
+            // Daftarkan ke Supabase Auth
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: dataForm.email,
+                password: dataForm.password,
             })
 
-            setSuccess("User berhasil ditambahkan!")
-            setDataForm({ username: "", password: "" })
-            setTimeout(() => setSuccess(""), 3000)
+            if (authError) {
+                setError(`Gagal membuat akun: ${authError.message}`)
+                return
+            }
 
+            // Simpan profile ke tabel profiles
+            const { error: profileError } = await API.createProfile({
+                id: authData.user.id,
+                email: dataForm.email,
+                full_name: dataForm.full_name,
+                role: dataForm.role,
+            })
+
+            if (profileError) {
+                setError(`Gagal menyimpan profil: ${profileError.message}`)
+                return
+            }
+
+            setSuccess("User berhasil ditambahkan!")
+            setDataForm({ email: "", password: "", full_name: "", role: "member" })
+            setTimeout(() => setSuccess(""), 3000)
             loadUsers()
 
         } catch (err) {
@@ -64,10 +80,8 @@ export default function Test() {
         try {
             setLoading(true)
             setError("")
-
-            await API.deleteUser(id)
+            await API.deleteProfile(id)
             loadUsers()
-
         } catch (err) {
             setError(`Terjadi kesalahan: ${err.message}`)
         } finally {
@@ -79,7 +93,7 @@ export default function Test() {
         try {
             setLoading(true)
             setError("")
-            const data = await API.fetchUsers()
+            const data = await API.fetchProfiles()
             setUsers(data)
         } catch (err) {
             setError("Gagal memuat data user")
@@ -94,8 +108,31 @@ export default function Test() {
         loadUsers()
     }, [])
 
+    const roleBadge = (role) => {
+        const isAdmin = role === "admin"
+        return (
+            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                isAdmin
+                    ? "bg-purple-100 text-purple-700"
+                    : "bg-emerald-100 text-emerald-700"
+            }`}>
+                {isAdmin ? "Admin" : "Member"}
+            </span>
+        )
+    }
+
+    const getInitials = (name) => {
+    if (!name) return "?"
+    return name
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    }
+
     return (
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="max-w-5xl mx-auto">
             <div className="mb-6">
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">
                     Manajemen User
@@ -127,9 +164,21 @@ export default function Test() {
                     <input
                         disabled={loading}
                         type="text"
-                        name="username"
-                        value={dataForm.username}
-                        placeholder="Username"
+                        name="full_name"
+                        value={dataForm.full_name}
+                        placeholder="Nama lengkap"
+                        onChange={handleChange}
+                        required
+                        className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                    />
+
+                    <input
+                        disabled={loading}
+                        type="email"
+                        name="email"
+                        value={dataForm.email}
+                        placeholder="Email"
                         onChange={handleChange}
                         required
                         className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none
@@ -147,6 +196,18 @@ export default function Test() {
                         className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none
                             focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     />
+
+                    <select
+                        disabled={loading}
+                        name="role"
+                        value={dataForm.role}
+                        onChange={handleChange}
+                        className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                    >
+                        <option value="member">Member</option>
+                        <option value="admin">Admin</option>
+                    </select>
 
                     <button
                         type="submit"
@@ -171,27 +232,29 @@ export default function Test() {
                     </h3>
                 </div>
 
-                {/* Loading */}
                 {loading && (
                     <div className="flex items-center justify-center p-6 text-gray-500 gap-2">
                         <ImSpinner2 className="animate-spin" /> Memuat data...
                     </div>
                 )}
 
-                {/* Kosong */}
                 {!loading && users.length === 0 && (
                     <div className="text-center p-6 text-gray-400">
                         Belum ada user. Tambah user pertama!
                     </div>
                 )}
 
-                {/* Tabel */}
                 {!loading && users.length > 0 && (
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
                             <tr>
                                 <th className="px-6 py-3">No.</th>
-                                <th className="px-6 py-3">Username</th>
+                                <th className="px-6 py-3">Nama</th>
+                                <th className="px-6 py-3">Avatar</th>
+                                <th className="px-6 py-3">Email</th>
+                                <th className="px-6 py-3">Role</th>
+                                <th className="px-6 py-3">Tier</th>
+                                <th className="px-6 py-3">Points</th>
                                 <th className="px-6 py-3">Dibuat</th>
                                 <th className="px-6 py-3">Aksi</th>
                             </tr>
@@ -202,8 +265,23 @@ export default function Test() {
                                     <td className="px-6 py-4 font-medium text-gray-700">
                                         {index + 1}.
                                     </td>
-                                    <td className="px-6 py-4 font-semibold text-emerald-600">
-                                        {user.username}
+                                    <td className="px-6 py-4 font-semibold text-gray-800">
+                                        {user.full_name || "-"}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Avatar initials={getInitials(user.full_name)} size={24} />
+                                    </td>
+                                    <td className="px-6 py-4 text-emerald-600">
+                                        {user.email}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {roleBadge(user.role)}
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-500 capitalize">
+                                        {user.tier || "-"}
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-500">
+                                        {user.points ?? 0}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
                                         {new Date(user.created_at).toLocaleDateString("id-ID")}

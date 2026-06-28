@@ -45,7 +45,7 @@ return (
             <Route path="/guest" element={<GuesTest />} />
             <Route path="/profil" element={<Profil />} />
         </Route>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/LP" element={<LandingPage />} />
         <Route element={<MainLayout/>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/orders" element={<Orders />} />
@@ -65,7 +65,7 @@ return (
             <Route path="/403" element={<Error403 />} />
         </Route>
         <Route element={<AuthLayout/>}>
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register/>} />
             <Route path="/forgot" element={<Forgot/>} />
         </Route>

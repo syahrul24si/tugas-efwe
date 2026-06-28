@@ -1,8 +1,9 @@
 import { GiIsland } from "react-icons/gi"; 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { API } from "../../service/API";
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const bookingData = [
@@ -105,9 +106,70 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function TravellingGOProfile() {
   const [activeNav, setActiveNav] = useState("profile");
   const [activeTab, setActiveTab] = useState("overview");
-  const memberStatus = "Gold"; // bisa diganti: "Silver" | "Bronze"
-  const badge = memberBadge[memberStatus];
-  const totalPoints = 2340;
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await API.signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      localStorage.removeItem("user");
+      navigate("/guest");
+    }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userData = localStorage.getItem("user");
+        if (!userData) {
+          setLoading(false);
+          return;
+        }
+        const parsed = JSON.parse(userData);
+        const { data, error } = await API.getProfileById(parsed.id);
+        if (!error && data) {
+          setProfile(data);
+        }
+      } catch (err) {
+        console.error("Gagal memuat profil:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const memberStatus = profile?.tier || "Bronze";
+  const badge = memberBadge[memberStatus] || memberBadge.Bronze;
+  const totalPoints = profile?.points ?? 0;
+  const fullName = profile?.full_name || "Pengguna";
+  const email = profile?.email || "-";
+  const initials = getInitials(fullName);
+  const memberSince = formatDate(profile?.created_at);
+  const memberId = profile?.id ? profile.id.slice(0, 8).toUpperCase() : "TG-0000";
 
   const tabs = ["Overview", "Riwayat Trip", "Poin Reward"];
 
@@ -139,10 +201,14 @@ export default function TravellingGOProfile() {
           ))}
         </nav>
 
-        {/* Avatar mini */}
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00BFA6] to-[#0B1E3D] flex items-center justify-center text-white font-black text-sm border-2 border-[#00BFA6]/50">
-          AA
-        </div>
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          title="Keluar"
+          className="w-9 h-9 rounded-full bg-red-500/20 hover:bg-red-500 flex items-center justify-center text-red-400 hover:text-white transition-all text-sm border-2 border-red-500/30 hover:border-red-500"
+        >
+          ⏻
+        </button>
       </aside>
 
       {/* ══ PROFILE SIDEBAR ═══════════════════════════════════════════════════ */}
@@ -158,7 +224,7 @@ export default function TravellingGOProfile() {
         <div className="flex flex-col items-center px-6 pb-6 pt-2">
           <div className="relative mb-4">
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#00BFA6] to-[#0B1E3D] flex items-center justify-center text-white font-black text-3xl shadow-xl">
-              :3
+              {initials}
             </div>
             <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br ${badge.bg} flex items-center justify-center text-sm shadow-md border-2 border-white`}>
               {badge.icon}
@@ -170,13 +236,13 @@ export default function TravellingGOProfile() {
             {badge.icon} {memberStatus} Member
           </span>
 
-          <h2 className="text-xl font-black text-[#0B1E3D] text-center">Udin</h2>
-          <p className="text-gray-400 text-sm mt-0.5">Member sejak 15/03/2022</p>
+          <h2 className="text-xl font-black text-[#0B1E3D] text-center">{fullName}</h2>
+          <p className="text-gray-400 text-sm mt-0.5">Member sejak {memberSince}</p>
 
           {/* Member ID & points */}
           <div className="mt-5 w-full grid grid-cols-2 gap-3">
             <div className="bg-[#EEF2F7] rounded-2xl p-3 text-center">
-              <p className="text-[#0B1E3D] font-black text-xl leading-none">TG-5821</p>
+              <p className="text-[#0B1E3D] font-black text-xl leading-none">{memberId}</p>
               <p className="text-gray-400 text-xs mt-1">Member ID</p>
             </div>
             <div className="bg-[#EEF2F7] rounded-2xl p-3 text-center">
@@ -215,7 +281,7 @@ export default function TravellingGOProfile() {
             {[
               { label: "Tanggal Lahir", value: "23/08/1992" },
               { label: "No. Telepon", value: "+62 812-3456-7890" },
-              { label: "Email", value: "udin@email.com" },
+              { label: "Email", value: email },
               { label: "Kota Asal", value: "Pekanbaru, Riau" },
               { label: "Kewarganegaraan", value: "Indonesia 🇮🇩" },
             ].map((row) => (
@@ -280,7 +346,7 @@ export default function TravellingGOProfile() {
               {[
                 { label: "Total Trip", value: "12", sub: "Sepanjang masa", color: "text-[#00BFA6]" },
                 { label: "Trip Tahun Ini", value: "4", sub: "2025", color: "text-[#FF6B4A]" },
-                { label: "Poin Reward", value: "2.340", sub: `Level ${memberStatus}`, color: "text-amber-500" },
+                { label: "Poin Reward", value: totalPoints.toLocaleString(), sub: `Level ${memberStatus}`, color: "text-amber-500" },
                 { label: "Total Belanja", value: "Rp 18,4Jt", sub: "Sepanjang masa", color: "text-purple-500" },
               ].map((s) => (
                 <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">

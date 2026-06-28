@@ -38,7 +38,7 @@ export default function Sidebar({adminCount, executiveCount }) {
           <p className="px-1 text-[11px] font-medium text-white/60">Menu</p>
           <ul className="space-y-2">
             <li>
-              <NavLink className={navLinkClass} to="/" end><MdDashboard className="h-4 w-4" />Dashboard</NavLink>
+              <NavLink className={navLinkClass} to="/dashboard" end><MdDashboard className="h-4 w-4" />Dashboard</NavLink>
             </li>
             <li>
               <NavLink className={navLinkClass} to="customer"><AiFillCustomerService className="h-4 w-4" />Customers</NavLink>
@@ -55,7 +55,7 @@ export default function Sidebar({adminCount, executiveCount }) {
 
             <p className="px-1 text-[11px] font-medium text-white/60">Testing</p>
             <li>
-              <NavLink className={navLinkClass} to="/test"><BsCalendarEvent className="h-4 w-4" />Test</NavLink>
+              <NavLink className={navLinkClass} to="/test"><BsCalendarEvent className="h-4 w-4" />Add User</NavLink>
             </li>
             <li>
               <NavLink className={navLinkClass} to="/profil"><BsCalendarEvent className="h-4 w-4" />Profil</NavLink>
