@@ -22,8 +22,8 @@ const Error403 = React.lazy(() => import("./pages/main/Error403"))
 const GuesTest = React.lazy(() => import("./pages/Guest/GuesTest"))
 const Profil = React.lazy(() => import("./pages/Guest/Profil"))
 
-const Test = React.lazy(() => import("./pages/main/Test.jsx"))
-const TestLogin = React.lazy(() => import("./pages/Auth/Login"))
+// const Test = React.lazy(() => import("./pages/main/Test.jsx"))
+// const TestLogin = React.lazy(() => import("./pages/Auth/Login"))
 
 const Login = React.lazy(() => import("./pages/Auth/Login"))
 const Forgot = React.lazy(() => import("./pages/Auth/Forgot"))
@@ -56,8 +56,8 @@ return (
             <Route path="/products/:id" element={<ProductDetail />} /> 
             <Route path="/reports" element={<Reports />} />
 
-            <Route path="/test" element={<Test />} />
-            <Route path="/test-login" element={<Login />} />
+            {/* <Route path="/test" element={<Test />} />
+            <Route path="/test-login" element={<Login />} /> */}
 
             <Route path="*" element={<NotFound />} />
             <Route path="/400" element={<Error400 />} />
