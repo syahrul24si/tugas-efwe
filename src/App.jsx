@@ -22,7 +22,7 @@ const Error403 = React.lazy(() => import("./pages/main/Error403"))
 const GuesTest = React.lazy(() => import("./pages/Guest/GuesTest"))
 const Profil = React.lazy(() => import("./pages/Guest/Profil"))
 
-const Test = React.lazy(() => import("./pages/main/Test"))
+const Test = React.lazy(() => import("./pages/main/Test.jsx"))
 const TestLogin = React.lazy(() => import("./pages/Auth/Login"))
 
 const Login = React.lazy(() => import("./pages/Auth/Login"))
