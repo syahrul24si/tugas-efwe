@@ -57,10 +57,15 @@ export default function Sidebar({adminCount, memberCount }) {
             <li>
               <NavLink className={navLinkClass} to="orders"><BsCalendarEvent className="h-4 w-4" />Orders</NavLink>
             </li>
+            <p className="px-1 text-[11px] font-medium text-white/60">Testing</p>
+            <li>
+              <NavLink className={navLinkClass} to="/LP"><BsCalendarEvent className="h-4 w-4" />Test</NavLink>
+            </li>
             {/* <li>
               <NavLink className={navLinkClass} to="/reports"><BsCalendarEvent className="h-4 w-4" />Reports</NavLink>
             </li> *
 
+            
             * <p className="px-1 text-[11px] font-medium text-white/60">Testing</p>
             <li>
               <NavLink className={navLinkClass} to="/test"><BsCalendarEvent className="h-4 w-4" />Add User</NavLink>
