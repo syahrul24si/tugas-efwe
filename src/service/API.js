@@ -72,7 +72,7 @@ export const API = {
     },
 
     async signOut() {
-        const { error } = await supabase.auth.signOut()
+        const { error } = await supabase.auth.signOut({ scope: 'local' })
         if (error) throw error
     },
 
@@ -120,7 +120,7 @@ export const API = {
         }
         const { data, error } = await supabase
             .from("profiles")
-            .insert([payload])
+            .upsert(payload, { onConflict: "id" })
         return { data, error }
     },
 
@@ -129,21 +129,133 @@ export const API = {
             .from("profiles")
             .update({ ...updates, updated_at: new Date().toISOString() })
             .eq("id", userId)
+            .select()
         return { data, error }
     },
 
     async fetchProfiles() {
         const { data, error } = await supabase
             .from("profiles")
-            .select("id, email, full_name, role, tier, points, created_at, updated_at")
+            .select("id, email, full_name, role, tier, points, no_hp, created_at, updated_at")
             .order("created_at", { ascending: false })
         if (error) throw error
         return data
     },
 
     async deleteProfile(id) {
+        const { error: authError } = await supabase.auth.admin.deleteUser(id)
+        if (authError) {
+            const { error } = await supabase
+                .from("profiles")
+                .delete()
+                .eq("id", id)
+            if (error) throw error
+        }
+    },
+
+    // --- Products ---
+
+    async fetchProducts() {
+        const { data, error } = await supabase
+            .from("products")
+            .select("*")
+            .order("created_at", { ascending: false })
+        if (error) throw error
+        return data
+    },
+
+    async getProductById(id) {
+        const { data, error } = await supabase
+            .from("products")
+            .select("*")
+            .eq("id", id)
+            .single()
+        return { data, error }
+    },
+
+    async createProduct(productData) {
+        const { data, error } = await supabase
+            .from("products")
+            .insert([productData])
+            .select()
+        return { data, error }
+    },
+
+    async updateProduct(id, updates) {
+        const { data, error } = await supabase
+            .from("products")
+            .update(updates)
+            .eq("id", id)
+            .select()
+        return { data, error }
+    },
+
+    async deleteProduct(id) {
         const { error } = await supabase
-            .from("profiles")
+            .from("products")
+            .delete()
+            .eq("id", id)
+        if (error) throw error
+    },
+
+    // --- Orders ---
+
+    async fetchOrders() {
+        const { data, error } = await supabase
+            .from("orders")
+            .select("*")
+            .order("created_at", { ascending: false })
+        if (error) throw error
+        return data
+    },
+
+    async createOrder(orderData) {
+        const { data, error } = await supabase
+            .from("orders")
+            .insert([orderData])
+            .select()
+        return { data, error }
+    },
+
+    async updateOrder(id, updates) {
+        const { data, error } = await supabase
+            .from("orders")
+            .update({ ...updates, updated_at: new Date().toISOString() })
+            .eq("id", id)
+            .select()
+        return { data, error }
+    },
+
+    async deleteOrder(id) {
+        const { error } = await supabase
+            .from("orders")
+            .delete()
+            .eq("id", id)
+        if (error) throw error
+    },
+
+    // --- Order Items ---
+
+    async fetchOrderItems() {
+        const { data, error } = await supabase
+            .from("order_items")
+            .select("*")
+            .order("created_at", { ascending: false })
+        if (error) throw error
+        return data
+    },
+
+    async createOrderItem(itemData) {
+        const { data, error } = await supabase
+            .from("order_items")
+            .insert([itemData])
+            .select()
+        return { data, error }
+    },
+
+    async deleteOrderItem(id) {
+        const { error } = await supabase
+            .from("order_items")
             .delete()
             .eq("id", id)
         if (error) throw error

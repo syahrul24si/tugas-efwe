@@ -1,8 +1,9 @@
-import { NavLink } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
+import { NavLink, useNavigate } from "react-router-dom";
+import { MdDashboard, MdLogout } from "react-icons/md";
 import { AiFillCustomerService } from "react-icons/ai";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { BsCalendarEvent } from "react-icons/bs";
+import { API } from "../service/API";
 
 const navLinkClass = ({ isActive }) =>
   `flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
@@ -11,15 +12,22 @@ const navLinkClass = ({ isActive }) =>
       : "border-black/10 bg-[#f0f0f0] text-[#ef233c] hover:border-white/20 hover:bg-white"
   }`;
 
-export default function Sidebar({adminCount, executiveCount }) {
-  const counts = {
-    dashboard: null,
-    admin: adminCount,
-    executive: executiveCount,
+export default function Sidebar({adminCount, memberCount }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await API.signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      localStorage.removeItem("user");
+      navigate("/");
+    }
   };
 
   return (
-    <aside className="flex w-full max-w-[290px] flex-col border-r border-white/15 bg-[#101010] p-5 text-white lg:min-h-[calc(100vh-2px)]">
+    <aside className="flex w-full max-w-[290px] flex-col border-r border-white/15 bg-[#101010] p-5 text-white">
       <div className="mb-5 flex items-center gap-3 rounded-xl border border-white/10 bg-white px-3 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
         <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#ef233c] bg-white text-[#111]">
           <span className="w-10 h-10 rounded-xl bg-[#FF6B4A] flex items-center justify-center text-white font-black text-lg shadow-md">T</span>
@@ -41,7 +49,7 @@ export default function Sidebar({adminCount, executiveCount }) {
               <NavLink className={navLinkClass} to="/dashboard" end><MdDashboard className="h-4 w-4" />Dashboard</NavLink>
             </li>
             <li>
-              <NavLink className={navLinkClass} to="customer"><AiFillCustomerService className="h-4 w-4" />Customers</NavLink>
+              <NavLink className={navLinkClass} to="customer"><AiFillCustomerService className="h-4 w-4" />Users</NavLink>
             </li>
             <li>
               <NavLink className={navLinkClass} to="produk"><CiDeliveryTruck className="h-4 w-4" />Products</NavLink>
@@ -49,11 +57,11 @@ export default function Sidebar({adminCount, executiveCount }) {
             <li>
               <NavLink className={navLinkClass} to="orders"><BsCalendarEvent className="h-4 w-4" />Orders</NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink className={navLinkClass} to="/reports"><BsCalendarEvent className="h-4 w-4" />Reports</NavLink>
-            </li>
+            </li> *
 
-            <p className="px-1 text-[11px] font-medium text-white/60">Testing</p>
+            * <p className="px-1 text-[11px] font-medium text-white/60">Testing</p>
             <li>
               <NavLink className={navLinkClass} to="/test"><BsCalendarEvent className="h-4 w-4" />Add User</NavLink>
             </li>
@@ -65,9 +73,18 @@ export default function Sidebar({adminCount, executiveCount }) {
             </li>
             <li>
               <NavLink className={navLinkClass} to="/Login"><BsCalendarEvent className="h-4 w-4" />Test Login</NavLink>
-            </li>
+            </li> */}
           </ul>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm font-medium text-red-400 transition hover:bg-red-500/20 hover:text-red-300"
+        >
+          <MdLogout className="h-4 w-4" />Logout
+        </button>
       </div>
     </aside>
   );

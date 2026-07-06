@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import data from "./customers.json"
+import { Button } from "@/components/ui/button"
 
 export default function CustomerDetail() {
     const { id } = useParams()
@@ -41,12 +42,12 @@ export default function CustomerDetail() {
                 Loyalty: {customer.loyalty}
             </p>
 
-            <button
+            <Button
                 className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
                 onClick={() => window.history.back()}
             >
                 Back to Customers
-            </button>
+            </Button>
         </div>
     )
 }
